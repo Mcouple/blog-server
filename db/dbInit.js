@@ -1,10 +1,23 @@
 const adminModel = require("./models/adminModel"); //admin数据模型
 const bannerModel = require("./models/bannerModel")
 const blogTypeModel = require("./models/blogTypeModel")
+const BlogModel = require("./models/blog")
 const sequelize = require("./dbConnect"); //数据库连接实例
 const md5 = require("md5");
 
 (async function() {
+    //定义模型之间的关联关系
+
+    //文章和文章分类之间的关系
+    blogTypeModel.hasMany(BlogModel, {
+        foreignKey: 'categoryId',
+        targetKey: "id"
+    })
+    BlogModel.belongsTo(blogTypeModel, {
+        foreignKey: 'categoryId',
+        targetKey: "id"
+    })
+
     //将数据模型和表进行同步
     await sequelize.sync({
             alter: true

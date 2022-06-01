@@ -41,6 +41,7 @@ const captcha = require("./routes/captcha");
 const banner = require("./routes/banner")
 const upload = require("./routes/upload")
 const blogType = require("./routes/blogType")
+const blog = require("./routes/blog")
 
 
 
@@ -68,6 +69,7 @@ app.use("/res/captcha", captcha)
 app.use("/api/banner", banner)
 app.use("/api/upload", upload)
 app.use("/api/blogtype", blogType)
+app.use("/api/blog", blog)
 
 
 
