@@ -40,3 +40,11 @@ module.exports.resviseBLog = async(info, id) => {
     return await blogTypeModel.findByPk(id)
 
 }
+
+//根据文章分类ID新增文章分类的文章数量
+module.exports.addBlogToType = async(id) => {
+    const res = await blogTypeModel.findByPk(id)
+    res.articleCount++;
+    await res.save();
+    return
+}

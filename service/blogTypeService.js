@@ -1,3 +1,4 @@
+const { async } = require("validate.js");
 const { addblogType, getTypes, delBlogTypes, getblog, resviseBLog } = require("../db/blogType")
 const { formatResponse } = require("../utils/tools")
 

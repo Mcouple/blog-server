@@ -9,12 +9,6 @@ const Blog = sequelize.define("Blog", {
     description: {
         type: DataTypes.TEXT
     },
-    createDate: {
-        type: DataTypes.STRING
-    },
-    category: {
-        type: DataTypes.STRING
-    },
     toc: {
         type: DataTypes.TEXT
     },
@@ -29,6 +23,9 @@ const Blog = sequelize.define("Blog", {
     },
     commentNumber: {
         type: DataTypes.INTEGER
+    },
+    createDate: {
+        type: DataTypes.STRING,
     },
 }, {
     freezeTableName: true,
