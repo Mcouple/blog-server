@@ -8,7 +8,7 @@ module.exports.addBlogModel = async(newBlog) => {
 }
 
 //修改文章
-module.exports.reBlog = async(id, newBlog) => {
+module.exports.upBlog = async(id, newBlog) => {
     await blogModel.update(newBlog, {
         where: {
             id
@@ -20,6 +20,8 @@ module.exports.reBlog = async(id, newBlog) => {
 
 //删除文章
 module.exports.deBlog = async(id) => {
+
+
     const data = await blogModel.destroy({
         where: {
             id
@@ -52,11 +54,22 @@ module.exports.pBlog = async(page = 1, limit = 10, keyword = "", categoryId = -1
         return await blogModel.findAndCountAll({
             include: [{
                 model: blogTypeModel,
-                // as: 'category',
+                as: 'category',
                 attributes: ['id', 'name']
             }],
             offset: (page * 1 - 1) * limit,
             limit: +limit
         })
     }
+}
+
+//获取单篇文章
+module.exports.getSingleBlog = async(id) => {
+    return await blogModel.findByPk(id, {
+        include: [{
+            model: blogTypeModel,
+            as: 'category',
+            attributes: ['id', 'name']
+        }]
+    })
 }

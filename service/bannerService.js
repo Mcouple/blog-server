@@ -7,5 +7,6 @@ module.exports.getBanner = async() => {
 
 //添加首页标语
 module.exports.setBanner = async(req) => {
-    return await setBanners(req);
+    const res = await setBanners(req);
+    return formatResponse(0, "", res)
 }

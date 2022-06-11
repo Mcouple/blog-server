@@ -7,6 +7,9 @@ const md5 = require("md5")
 const expressJWT = require("express-jwt");
 const { ForbiddenError, ServiceError, UnknowError } = require("./utils/errors")
 const session = require("express-session")
+    //引入转换路径的正则表达式
+const { pathToRegexp } = require("path-to-regexp")
+
 
 //创建服务器实例
 var app = express();
@@ -42,12 +45,18 @@ const banner = require("./routes/banner")
 const upload = require("./routes/upload")
 const blogType = require("./routes/blogType")
 const blog = require("./routes/blog")
-
+const project = require("./routes/project")
+const message = require("./routes/message")
+const setting = require("./routes/setting")
+const about = require("./routes/about")
 
 
 //连接数据库
 require("./db/dbInit")
 
+
+//需要转换的路径
+const reg = pathToRegexp("/api/blog/:id")
 
 //配置验证token接口
 app.use(expressJWT({
@@ -59,8 +68,16 @@ app.use(expressJWT({
         { "url": "/api/admin/login", methods: ["POST"] },
         { "url": "/res/captcha", methods: ["GET"] },
         { "url": "/api/banner", methods: ["GET"] },
+        { "url": "/api/blog", methods: ["GET"] },
+        { "url": "/api/blogtype", methods: ["GET"] },
+        { "url": reg, methods: ["GET"] },
+        { "url": "/api/project", methods: ["GET"] },
+        { "url": "/api/message", methods: ["GET", "POST"] },
+        { "url": "/api/comment", methods: ["GET", "POST"] },
+        { "url": "/api/setting", methods: ["GET"] },
     ]
 }))
+
 
 
 //使用路由
@@ -70,7 +87,11 @@ app.use("/api/banner", banner)
 app.use("/api/upload", upload)
 app.use("/api/blogtype", blogType)
 app.use("/api/blog", blog)
-
+app.use("/api/project", project)
+app.use("/api/message", message)
+app.use("/api/comment", message)
+app.use("/api/setting", setting)
+app.use("/api/about", about)
 
 
 // catch 404 and forward to error handler

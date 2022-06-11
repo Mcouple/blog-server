@@ -43,6 +43,7 @@ module.exports.reviseBlogType = async(info, id) => {
 
 //删除一个文章分类
 module.exports.deleteBlogType = async(id) => {
-    const res = await delBlogTypes(id)
+    const res = await delBlogTypes(id);
+    //删除一个文章分类，返回受影响的文章数量
     return formatResponse(0, "", res)
 }

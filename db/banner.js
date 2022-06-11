@@ -10,6 +10,9 @@ module.exports.getBanners = async() => {
 //添加首页标语
 module.exports.setBanners = async(req) => {
     // return await bannerModel.create(req)
-    const resp = await bannerModel.create(req)
-    return resp.toJSON()
+    await bannerModel.destroy({
+        truncate: true
+    })
+    return await bannerModel.bulkCreate(req)
+
 }

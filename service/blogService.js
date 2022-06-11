@@ -1,12 +1,15 @@
 const { ValidationError } = require("../utils/errors")
-const { validate, async } = require("validate.js")
 const blogTypeModel = require("../db/models/blogTypeModel")
-const { addBlogModel, reBlog, deBlog, pBlog } = require("../db/blog")
+const { validate } = require("validate.js")
+const { addBlogModel, upBlog, deBlog, pBlog, getSingleBlog } = require("../db/blog")
 const { formatResponse } = require("../utils/tools")
 const { addBlogToType } = require("../db/blogType")
 const blogModel = require("../db/models/blog")
 const { NotFoundError } = require("../utils/errors")
-    //传一个要验证的值过来
+const { getblog } = require("../db/blogType")
+const { deleteBlogMessage } = require("../db/message")
+
+//传一个要验证的值过来
 validate.validators.categoryIdIsExist = async(value) => {
     const blogTypeInfo = blogTypeModel.findByPk(value)
     if (blogTypeInfo) {
@@ -96,19 +99,41 @@ module.exports.addBlog = async(newBlog) => {
 }
 
 //获取单篇文章
-module.exports.getBlog = async(id) => {
-    const { dataValues } = await blogModel.findByPk(id)
-    return formatResponse(0, "", dataValues)
+module.exports.getBlog = async(id, auth) => {
+    const data = await getSingleBlog(id);
+    //首先需要重新处理TOC,还原成一个数组
+    data.dataValues.toc = JSON.parse(data.dataValues.toc)
+
+    if (!auth) {
+        //没有token表示前台获取的文章
+        data.scanNumber++;
+        await data.save()
+    }
+    return formatResponse(0, "", data.dataValues)
 }
 
 //修改文章
 module.exports.resviseBlog = async(id, newBlog) => {
-    const res = await reBlog(id, newBlog)
+    //首先判断一下正文内容有没有改变，如果正文内容的改变会影响TOC
+    if (newBlogInfo.htmlContent) {
+        //进入此if，说明文章的正文内容有所改变，需要重新处理TOC目录
+        newBlog.toc = JSON.stringify('["a":"b"]')
+    }
+    const res = await upBlog(id, newBlog)
     return formatResponse(0, "", res)
 }
 
 //删除文章
 module.exports.deleteBlog = async(id) => {
+    //根据 id 查询到该篇文章的信息
+    const res = await getSingleBlog(id)
+    const categoryInfo = await getblog(res.dataValues.categoryId)
+    categoryInfo.articleCount--;
+    categoryInfo.save();
+    //下面还有一个操作，对该文章下面的评论一并删除
+    await deleteBlogMessage(id)
+
+
     const data = await deBlog(id)
     if (data) {
         return formatResponse(0, "", true)

@@ -3,8 +3,10 @@ const router = express.Router()
 const { addBlog, getBlog, resviseBlog, deleteBlog, pageBlog } = require("../service/blogService")
 
 //获取单篇文章
+//要分析两种情况，1、前端获取文章，没有token浏览数要加一 2、后端获取文章有token
 router.get("/:id", async(req, res, next) => {
-    res.send(await getBlog(req.params.id))
+    const header = req.headers
+    res.send(await getBlog(req.params.id, header.authorization))
 })
 
 //分页获取文章

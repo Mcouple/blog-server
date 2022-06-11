@@ -18,7 +18,7 @@ class ServiceError extends Error {
         }
         //方法
     toResponseJSON() {
-        return formatResponse(this.code, this.message, null)
+        return JSON.stringify(formatResponse(this.code, this.message, null))
     }
 }
 

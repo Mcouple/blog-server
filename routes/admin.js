@@ -12,7 +12,6 @@ router.post("/login", async(req, res, next) => {
         throw new ValidationError("验证码错误")
     }
 
-
     //如果上面验证码通过，进行下面的验证 
     const result = await adminLogin(req.body)
     res.setHeader("authorization", result.token)
